@@ -7,6 +7,9 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const isFirebaseConfigured = Object.values(firebaseConfig).every(Boolean);
 
-export const auth = getAuth(app);
+// null until .env.local is filled in, so a missing key cannot crash the app
+export const auth = isFirebaseConfigured
+  ? getAuth(initializeApp(firebaseConfig))
+  : null;
