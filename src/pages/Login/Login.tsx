@@ -19,9 +19,6 @@ const titles: Record<Mode, string> = {
   reset: "Reset password",
 };
 
-const inputClass = "mt-1 w-full rounded border border-gray-300 px-3 py-2";
-const linkClass = "text-indigo-600 hover:underline";
-
 export default function Login() {
   const { user, ready } = useAppSelector((state) => state.auth);
   const location = useLocation();
@@ -34,7 +31,7 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
 
   if (!ready) {
-    return <div className="p-6">Loading…</div>;
+    return <div className="page text-muted">Loading…</div>;
   }
 
   // Runs after a successful login too: go back to the page that was asked for
@@ -44,7 +41,7 @@ export default function Login() {
 
   if (!auth) {
     return (
-      <div className="p-6">
+      <div className="page">
         Login is not set up yet. Add your Firebase values to <code>.env.local</code>{" "}
         (see the README) and restart the app.
       </div>
@@ -101,8 +98,8 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto max-w-sm p-6">
-      <h1 className="mb-4 text-2xl font-semibold">{titles[mode]}</h1>
+    <div className="card mx-4 mt-10 max-w-sm sm:mx-auto">
+      <h1 className="mb-4">{titles[mode]}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
@@ -113,7 +110,7 @@ export default function Login() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={inputClass}
+            className="input"
           />
         </label>
 
@@ -127,18 +124,18 @@ export default function Login() {
               minLength={mode === "signup" ? 6 : undefined}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputClass}
+              className="input"
             />
           </label>
         )}
 
         {error && (
-          <p role="alert" className="text-red-600">
+          <p role="alert" className="text-danger">
             {error}
           </p>
         )}
         {notice && (
-          <p role="status" className="text-green-700">
+          <p role="status" className="text-success">
             {notice}
           </p>
         )}
@@ -146,7 +143,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded bg-indigo-600 px-3 py-2 text-white disabled:opacity-50"
+          className="btn-primary w-full"
         >
           {busy ? "Please wait…" : titles[mode]}
         </button>
@@ -157,7 +154,7 @@ export default function Login() {
           type="button"
           disabled={busy}
           onClick={handleGoogle}
-          className="mt-3 w-full rounded border border-gray-300 px-3 py-2 hover:bg-gray-50 disabled:opacity-50"
+          className="btn-secondary mt-3 w-full"
         >
           Continue with Google
         </button>
@@ -165,16 +162,16 @@ export default function Login() {
 
       <div className="mt-4 flex flex-col items-start gap-2">
         {mode !== "login" && (
-          <button type="button" className={linkClass} onClick={() => changeMode("login")}>
+          <button type="button" className="link" onClick={() => changeMode("login")}>
             Back to log in
           </button>
         )}
         {mode === "login" && (
           <>
-            <button type="button" className={linkClass} onClick={() => changeMode("signup")}>
+            <button type="button" className="link" onClick={() => changeMode("signup")}>
               Create an account
             </button>
-            <button type="button" className={linkClass} onClick={() => changeMode("reset")}>
+            <button type="button" className="link" onClick={() => changeMode("reset")}>
               Forgot password?
             </button>
           </>
