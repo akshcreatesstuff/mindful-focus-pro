@@ -2,8 +2,10 @@ import { useState, type SyntheticEvent } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { useAppSelector } from "../../app/hooks";
 import { authErrorMessage } from "../../features/auth/authErrors";
@@ -56,6 +58,24 @@ export default function Login() {
     setPassword("");
     setError("");
     setNotice("");
+  }
+
+  async function handleGoogle() {
+    setError("");
+    setNotice("");
+    setBusy(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      // Let people choose an account instead of reusing the last one
+      provider.setCustomParameters({ prompt: "select_account" });
+      // Must run straight from the click, or the browser may block the popup
+      await signInWithPopup(firebaseAuth, provider);
+    } catch (caught) {
+      setError(authErrorMessage(caught));
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
@@ -131,6 +151,17 @@ export default function Login() {
           {busy ? "Please wait…" : titles[mode]}
         </button>
       </form>
+
+      {mode !== "reset" && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={handleGoogle}
+          className="mt-3 w-full rounded border border-gray-300 px-3 py-2 hover:bg-gray-50 disabled:opacity-50"
+        >
+          Continue with Google
+        </button>
+      )}
 
       <div className="mt-4 flex flex-col items-start gap-2">
         {mode !== "login" && (

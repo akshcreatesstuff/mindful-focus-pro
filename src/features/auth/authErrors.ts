@@ -9,10 +9,20 @@ const messages: Record<string, string> = {
   "auth/too-many-requests": "Too many attempts. Wait a while and try again.",
   "auth/network-request-failed": "Network problem. Check your connection.",
   "auth/operation-not-allowed":
-    "Email/password sign-in is not enabled in the Firebase console.",
+    "This sign-in method is not enabled in the Firebase console.",
+  "auth/popup-blocked":
+    "Your browser blocked the sign-in window. Allow popups and try again.",
+  "auth/unauthorized-domain":
+    "This web address is not in Firebase's authorized domains list.",
+  "auth/account-exists-with-different-credential":
+    "This email already uses another sign-in method. Log in that way instead.",
 };
+
+// The person closed the Google window themselves, so there is nothing to report
+const ignored = ["auth/popup-closed-by-user", "auth/cancelled-popup-request"];
 
 export function authErrorMessage(error: unknown) {
   const code = error instanceof FirebaseError ? error.code : "";
+  if (ignored.includes(code)) return "";
   return messages[code] ?? `Something went wrong. ${code}`.trim();
 }
