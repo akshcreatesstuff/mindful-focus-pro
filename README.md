@@ -13,6 +13,16 @@ npm run dev
 
 Then open the address Vite prints (usually http://localhost:5173).
 
+## Code structure (SOLID)
+
+| Principle | Rule in this project |
+|---|---|
+| Single responsibility | A file does one job: page, markup, hook, state or provider code |
+| Open/closed | Add pages in `src/app/pages.ts` and form modes in `features/auth/authModes.ts` |
+| Liskov substitution | Any `AuthService` must keep the promises written in `features/auth/types.ts` |
+| Interface segregation | Ask only for what you use: `AuthSession`, `PasswordAuth` or `GoogleAuth` |
+| Dependency inversion | Screens use `useAuthService()`. Only `features/auth/firebase/`, `services/firebase.ts` and `main.tsx` deal with Firebase |
+
 ## Colors, fonts and sizes
 
 - Colors, the font and text sizes are set in `tailwind.config.js`.

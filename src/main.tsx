@@ -4,15 +4,22 @@ import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './app/routes';
 import { store } from './app/store';
+import { AuthServiceContext } from './features/auth/AuthServiceContext';
+import { createFirebaseAuthService } from './features/auth/firebase/createFirebaseAuthService';
 import { listenToAuth } from './features/auth/listenToAuth';
+import { auth } from './services/firebase';
 import './index.css';
 
-listenToAuth(store.dispatch);
+// The only place that chooses which authentication provider the app uses
+const authService = auth ? createFirebaseAuthService(auth) : null;
+listenToAuth(authService, store.dispatch);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <AuthServiceContext value={authService}>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </AuthServiceContext>
   </React.StrictMode>
 );

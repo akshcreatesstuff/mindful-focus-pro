@@ -1,20 +1,14 @@
-import { signOut } from "firebase/auth";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
-import { auth } from "../services/firebase";
-
-const links = [
-  { to: "/", label: "Dashboard" },
-  { to: "/analytics", label: "Analytics" },
-  { to: "/rewards", label: "Rewards" },
-  { to: "/videos", label: "Videos" },
-];
+import { protectedPages } from "../app/pages";
+import { useAuthService } from "../features/auth/useAuthService";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "nav-link-active" : "nav-link";
 
 export default function Layout() {
   const user = useAppSelector((state) => state.auth.user);
+  const authService = useAuthService();
 
   return (
     <div className="min-h-full">
@@ -22,16 +16,16 @@ export default function Layout() {
         <span className="mr-4 text-lg font-semibold text-brand">Mindful Focus</span>
         {user ? (
           <>
-            {links.map((link) => (
-              <NavLink key={link.to} to={link.to} end className={linkClass}>
-                {link.label}
+            {protectedPages.map(({ path, label }) => (
+              <NavLink key={path} to={path} end className={linkClass}>
+                {label}
               </NavLink>
             ))}
             <span className="ml-auto text-sm text-muted">{user.email}</span>
             <button
               type="button"
               className="nav-link"
-              onClick={() => auth && signOut(auth)}
+              onClick={() => authService?.signOut()}
             >
               Log out
             </button>
