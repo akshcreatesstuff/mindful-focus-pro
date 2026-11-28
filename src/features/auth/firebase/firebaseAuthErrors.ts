@@ -1,4 +1,5 @@
 import { FirebaseError } from "firebase/app";
+import { AuthError } from "../types";
 
 const messages: Record<string, string> = {
   "auth/invalid-credential": "Wrong email or password.",
@@ -19,10 +20,13 @@ const messages: Record<string, string> = {
 };
 
 // The person closed the Google window themselves, so there is nothing to report
-const ignored = ["auth/popup-closed-by-user", "auth/cancelled-popup-request"];
+const cancellations = ["auth/popup-closed-by-user", "auth/cancelled-popup-request"];
 
-export function authErrorMessage(error: unknown) {
+export function isCancellation(error: unknown) {
+  return error instanceof FirebaseError && cancellations.includes(error.code);
+}
+
+export function toAuthError(error: unknown) {
   const code = error instanceof FirebaseError ? error.code : "";
-  if (ignored.includes(code)) return "";
-  return messages[code] ?? `Something went wrong. ${code}`.trim();
+  return new AuthError(messages[code] ?? `Something went wrong. ${code}`.trim());
 }

@@ -1,10 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-// Only plain data goes in Redux, never the Firebase User object
-export type AuthUser = {
-  uid: string;
-  email: string | null;
-};
+import type { AuthUser } from "./types";
 
 type AuthState = {
   user: AuthUser | null;

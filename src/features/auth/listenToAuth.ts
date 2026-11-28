@@ -1,16 +1,13 @@
-import { onAuthStateChanged } from "firebase/auth";
 import type { AppDispatch } from "../../app/store";
-import { auth } from "../../services/firebase";
 import { userChanged } from "./authSlice";
+import type { AuthSession } from "./types";
 
-// Keeps Redux in step with Firebase on page load, login and logout
-export function listenToAuth(dispatch: AppDispatch) {
-  if (!auth) {
+// Keeps Redux in step with the login state on page load, login and logout
+export function listenToAuth(session: AuthSession | null, dispatch: AppDispatch) {
+  if (!session) {
     dispatch(userChanged(null));
     return;
   }
 
-  onAuthStateChanged(auth, (user) => {
-    dispatch(userChanged(user ? { uid: user.uid, email: user.email } : null));
-  });
+  session.observeUser((user) => dispatch(userChanged(user)));
 }
