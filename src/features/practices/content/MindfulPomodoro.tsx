@@ -1,4 +1,4 @@
-import { useStreak } from "../../streak/useStreak";
+import { useProgress } from "../../progress/useProgress";
 import { Card } from "../components/Blocks";
 import Checklist from "../components/Checklist";
 import PomodoroTimer from "../components/PomodoroTimer";
@@ -14,15 +14,16 @@ export function PomodoroAbout() {
 }
 
 export function PomodoroBody() {
-  const { completeSession } = useStreak();
+  const { progress } = useProgress();
 
   return (
     <div className="cards-grid">
       <Card label="Session Timer">
-        <PomodoroTimer onWorkComplete={completeSession} />
+        {progress && <PomodoroTimer progress={progress} />}
       </Card>
       <Card label="Mindful Pomodoro Protocol">
         <Checklist
+          id="pomodoro"
           items={[
             'Set a single intention: "I will work on ___"',
             "Remove all notifications; close unused tabs",

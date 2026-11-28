@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Admins are added by hand in the Firebase console
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow get: if isOwner(uid);
+      allow write: if false;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['email', 'lastSeenAt'])
+        && request.resource.data.email == request.auth.token.get('email', null);
+
+      match /data/progress {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(
+               ['carriedOver', 'completed', 'timers', 'checklists']);
+      }
+
+      // Journals: the writer only, not even admins
+      match /journal/{entryId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['text', 'createdAt', 'plan'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 5000;
+        // Only the AI plan can be added to an entry afterwards
+        allow update: if isOwner(uid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan']);
+      }
+    }
+
+    // Everything not listed above is denied
+  }
+}

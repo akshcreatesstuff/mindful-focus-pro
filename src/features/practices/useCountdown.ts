@@ -1,14 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { secondsLeft } from "./countdown";
+import {
+  finishTimer,
+  pauseTimer,
+  secondsRemaining,
+  startTimer,
+  type TimerState,
+} from "./countdown";
 
-export type TimerStatus = "idle" | "running" | "paused" | "done";
+const createRunId = () => `r${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
 
-export function useCountdown(initialSeconds: number, onComplete: () => void) {
-  const [duration, setDuration] = useState(initialSeconds);
-  const [remaining, setRemaining] = useState(initialSeconds);
-  const [status, setStatus] = useState<TimerStatus>("idle");
-  const msLeft = useRef(initialSeconds * 1000);
-  const deadlineRef = useRef(0);
+// Drives a saved timer: the state comes in, and every change goes back out to be stored
+export function useCountdown(
+  timer: TimerState,
+  onChange: (next: TimerState) => void,
+  onComplete: (finished: TimerState) => void,
+) {
+  const [now, setNow] = useState(() => Date.now());
+  const completedRun = useRef("");
   const completeRef = useRef(onComplete);
 
   useEffect(() => {
@@ -16,42 +24,29 @@ export function useCountdown(initialSeconds: number, onComplete: () => void) {
   });
 
   useEffect(() => {
-    if (status !== "running") return;
+    if (timer.status !== "running") return;
 
-    const deadline = Date.now() + msLeft.current;
-    const interval = setInterval(() => {
-      const left = secondsLeft(deadline, Date.now());
-      setRemaining(left);
-      if (left === 0) {
-        clearInterval(interval);
-        setStatus("done");
-        completeRef.current();
+    function tick() {
+      const time = Date.now();
+      setNow(time);
+      if (time >= timer.endsAt && completedRun.current !== timer.runId) {
+        completedRun.current = timer.runId;
+        completeRef.current(finishTimer(timer));
       }
-    }, 250);
+    }
 
-    deadlineRef.current = deadline;
+    tick();
+    const interval = setInterval(tick, 250);
     return () => clearInterval(interval);
-  }, [status]);
-
-  function reset(seconds = duration) {
-    setStatus("idle");
-    setDuration(seconds);
-    setRemaining(seconds);
-    msLeft.current = seconds * 1000;
-  }
+  }, [timer]);
 
   function toggle() {
-    if (status === "running") {
-      msLeft.current = Math.max(0, deadlineRef.current - Date.now());
-      setStatus("paused");
-      return;
-    }
-    if (status === "done") {
-      msLeft.current = duration * 1000;
-      setRemaining(duration);
-    }
-    setStatus("running");
+    const time = Date.now();
+    setNow(time);
+    onChange(
+      timer.status === "running" ? pauseTimer(timer, time) : startTimer(timer, time, createRunId()),
+    );
   }
 
-  return { duration, remaining, status, toggle, reset };
+  return { remaining: secondsRemaining(timer, now), toggle };
 }

@@ -612,6 +612,15 @@ body {
 .practice:nth-child(5) { animation-delay: 0.2s; }
 
 /* ── App additions ─────────────────────────────────── */
+.journal-list { display: flex; flex-direction: column; gap: 16px; }
+textarea.input { resize: vertical; margin-bottom: 12px; }
+.consent { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 12px; }
+.consent input { margin-top: 4px; }
+.journal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.entry-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.plan { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.plan .highlight-box { margin-top: 0; }
+.save-error { color: #A4332A; margin: 0 0 16px; }
 a.nav-link, a.nav-link:hover { text-decoration: none; }
 /* Match the original, where buttons kept the browser line height */
 button, a.nav-link { line-height: normal; }

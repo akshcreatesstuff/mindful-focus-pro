@@ -1,4 +1,4 @@
-import type { TimerStatus } from "../useCountdown";
+import type { TimerStatus } from "../countdown";
 
 type OptionsProps<T> = {
   options: { value: T; label: string }[];

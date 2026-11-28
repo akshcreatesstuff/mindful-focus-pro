@@ -2,8 +2,9 @@ import { Fragment, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PracticeSection from "../../features/practices/components/PracticeSection";
 import { practices } from "../../features/practices/practices";
+import ProgressGate from "../../features/progress/ProgressGate";
 
-export default function Dashboard() {
+function Practices() {
   const { hash, key } = useLocation();
 
   // Scroll to the practice chosen in the sidebar, even if it is clicked twice
@@ -13,6 +14,15 @@ export default function Dashboard() {
     }
   }, [hash, key]);
 
+  return practices.map((practice, index) => (
+    <Fragment key={practice.id}>
+      {index > 0 && <hr className="divider" />}
+      <PracticeSection practice={practice} />
+    </Fragment>
+  ));
+}
+
+export default function Dashboard() {
   return (
     <>
       <div className="hero">
@@ -28,12 +38,7 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {practices.map((practice, index) => (
-        <Fragment key={practice.id}>
-          {index > 0 && <hr className="divider" />}
-          <PracticeSection practice={practice} />
-        </Fragment>
-      ))}
+      <ProgressGate>{() => <Practices />}</ProgressGate>
     </>
   );
 }

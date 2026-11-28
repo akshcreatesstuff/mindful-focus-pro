@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { formatTime } from "../countdown";
+import { totalsFor } from "../../progress/progressModel";
+import type { Progress } from "../../progress/types";
+import { useProgress } from "../../progress/useProgress";
+import { formatTime, newTimer } from "../countdown";
 import { useCountdown } from "../useCountdown";
 import { TimerControls, TimerOptions } from "./TimerButtons";
 
@@ -13,39 +15,47 @@ const options: { value: Mode; label: string }[] = [
   { value: "long", label: "10 min rest" },
 ];
 
-export default function PomodoroTimer({ onWorkComplete }: { onWorkComplete: () => void }) {
-  const [mode, setMode] = useState<Mode>("work");
-  const [sessions, setSessions] = useState(0);
-  const timer = useCountdown(seconds.work, () => {
-    if (mode === "work") {
-      setSessions((count) => count + 1);
-      onWorkComplete();
-    }
-    const message =
-      mode === "work" ? "🍅 Session complete! Time to rest." : "✅ Break over. Back to focus!";
-    // A short delay lets the screen show 0:00 before the alert blocks it
-    setTimeout(() => window.alert(message), 50);
-  });
+export default function PomodoroTimer({ progress }: { progress: Progress }) {
+  const { saveTimer, completeTimer } = useProgress();
+  const timer = progress.timers.pomodoro;
+  const sessions = totalsFor(progress, "pomodoro").count;
+  const { remaining, toggle } = useCountdown(
+    timer,
+    (next) => saveTimer("pomodoro", next),
+    (finished) => {
+      const isWork = finished.mode === "work";
+      completeTimer(
+        "pomodoro",
+        finished,
+        isWork ? { kind: "pomodoro", seconds: finished.duration, at: Date.now() } : null,
+      );
+      const message = isWork
+        ? "🍅 Session complete! Time to rest."
+        : "✅ Break over. Back to focus!";
+      // A short delay lets the screen show 0:00 before the alert blocks it
+      setTimeout(() => window.alert(message), 50);
+    },
+  );
   // The first dot is lit before any session, then one per finished session in each set of four
   const litDots = sessions === 0 ? 1 : sessions % 4;
-
-  function selectMode(next: Mode) {
-    setMode(next);
-    timer.reset(seconds[next]);
-  }
+  const reset = (mode: Mode) => saveTimer("pomodoro", newTimer(seconds[mode], mode));
 
   return (
     <>
-      <TimerOptions options={options} selected={mode} onSelect={selectMode} />
+      <TimerOptions options={options} selected={timer.mode as Mode} onSelect={reset} />
       <div className="phase-indicator" aria-label={`${sessions} work sessions completed`}>
         {[0, 1, 2, 3].map((dot) => (
           <div key={dot} className={dot < litDots ? "phase-dot work" : "phase-dot"} />
         ))}
       </div>
       <div className="timer-display" role="timer">
-        {formatTime(timer.remaining)}
+        {formatTime(remaining)}
       </div>
-      <TimerControls status={timer.status} onToggle={timer.toggle} onReset={() => timer.reset()} />
+      <TimerControls
+        status={timer.status}
+        onToggle={toggle}
+        onReset={() => reset(timer.mode as Mode)}
+      />
     </>
   );
 }
