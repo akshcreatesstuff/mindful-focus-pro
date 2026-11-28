@@ -23,11 +23,12 @@ Then open the address Vite prints (usually http://localhost:5173).
 | Interface segregation | Ask only for what you use: `AuthSession`, `PasswordAuth` or `GoogleAuth` |
 | Dependency inversion | Screens use `useAuthService()`. Only `features/auth/firebase/`, `services/firebase.ts` and `main.tsx` deal with Firebase |
 
-## Colors, fonts and sizes
+## Theme and practices
 
-- Colors, the font and text sizes are set in `tailwind.config.js`.
-- Shared styles such as `btn-primary`, `input`, `card` and `page` are in `src/index.css`.
-- The Lexend font is loaded from Google Fonts in `index.html`.
+- Colors, fonts, sizes and layout are in `src/styles/theme.css`.
+- Fonts (Cormorant Garamond and DM Mono) are loaded in `index.html`.
+- The five practices are listed in `src/features/practices/practices.ts`; their text is in `content/`.
+- The streak is saved per account in this browser only. It goes up by one for each finished breathing or work session.
 
 ## Set up login (Firebase)
 

@@ -9,6 +9,7 @@ import { createFirebaseAuthService } from './features/auth/firebase/createFireba
 import { listenToAuth } from './features/auth/listenToAuth';
 import { auth } from './services/firebase';
 import './index.css';
+import './styles/theme.css';
 
 // The only place that chooses which authentication provider the app uses
 const authService = auth ? createFirebaseAuthService(auth) : null;

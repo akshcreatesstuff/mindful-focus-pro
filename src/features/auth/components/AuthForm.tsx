@@ -13,8 +13,8 @@ export default function AuthForm({ auth }: { auth: PasswordAuth & GoogleAuth }) 
   }
 
   return (
-    <div className="card mx-4 mt-10 max-w-sm sm:mx-auto">
-      <h1 className="mb-4">{title}</h1>
+    <div className="card auth-card">
+      <h1>{title}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
@@ -55,7 +55,7 @@ export default function AuthForm({ auth }: { auth: PasswordAuth & GoogleAuth }) 
           </p>
         )}
 
-        <button type="submit" disabled={form.busy} className="btn-primary w-full">
+        <button type="submit" disabled={form.busy} className="btn primary w-full">
           {form.busy ? "Please wait…" : title}
         </button>
       </form>
@@ -65,7 +65,7 @@ export default function AuthForm({ auth }: { auth: PasswordAuth & GoogleAuth }) 
           type="button"
           disabled={form.busy}
           onClick={form.signInWithGoogle}
-          className="btn-secondary mt-3 w-full"
+          className="btn mt-3 w-full"
         >
           Continue with Google
         </button>
