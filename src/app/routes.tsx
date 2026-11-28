@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout";
+import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Login from "../pages/Login/Login";
 import Analytics from "../pages/Analytics/Analytics";
@@ -11,11 +12,16 @@ export const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <Dashboard /> },
       { path: "login", element: <Login /> },
-      { path: "analytics", element: <Analytics /> },
-      { path: "rewards", element: <Rewards /> },
-      { path: "videos", element: <Videos /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: "analytics", element: <Analytics /> },
+          { path: "rewards", element: <Rewards /> },
+          { path: "videos", element: <Videos /> },
+        ],
+      },
       { path: "*", element: <div className="p-6">Page not found</div> },
     ],
   },
