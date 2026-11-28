@@ -7,7 +7,7 @@ export default function ProtectedRoute() {
 
   // Wait, otherwise a logged-in user is sent to /login on every refresh
   if (!ready) {
-    return <div className="p-6">Loading…</div>;
+    return <div className="page text-muted">Loading…</div>;
   }
 
   if (!user) {

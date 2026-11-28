@@ -2,13 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full w-full;
+  }
+
+  body {
+    @apply m-0 bg-canvas font-sans text-base text-ink antialiased;
+  }
+
+  h1 {
+    @apply text-title font-semibold;
+  }
+
+  h2,
+  h3 {
+    @apply text-lg font-medium;
+  }
+
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-brand;
+  }
 }
 
-body {
-  margin: 0;
+/* Shared building blocks: use these instead of repeating color classes */
+@layer components {
+  .page {
+    @apply mx-auto max-w-5xl p-6;
+  }
+
+  .card {
+    @apply rounded-xl border border-line bg-surface p-6;
+  }
+
+  .btn {
+    @apply rounded-lg px-4 py-2 font-medium disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-brand-strong;
+  }
+
+  .btn-secondary {
+    @apply btn border border-control bg-surface text-ink hover:bg-brand-soft;
+  }
+
+  .nav-link {
+    @apply rounded-lg px-3 py-1.5 text-muted hover:bg-brand-soft hover:text-ink;
+  }
+
+  .nav-link-active {
+    @apply rounded-lg bg-brand px-3 py-1.5 text-white;
+  }
+
+  .link {
+    @apply text-brand underline-offset-4 hover:text-brand-strong hover:underline;
+  }
+
+  .input {
+    @apply mt-1 w-full rounded-lg border border-control bg-surface px-3 py-2;
+  }
 }

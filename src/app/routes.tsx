@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
           { path: "videos", element: <Videos /> },
         ],
       },
-      { path: "*", element: <div className="p-6">Page not found</div> },
+      { path: "*", element: <div className="page">Page not found</div> },
     ],
   },
 ]);

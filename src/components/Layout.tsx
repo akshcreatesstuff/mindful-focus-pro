@@ -11,16 +11,15 @@ const links = [
 ];
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `rounded px-3 py-1 ${
-    isActive ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"
-  }`;
+  isActive ? "nav-link-active" : "nav-link";
 
 export default function Layout() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
     <div className="min-h-full">
-      <nav className="flex flex-wrap gap-2 border-b p-4">
+      <nav className="flex flex-wrap items-center gap-2 border-b border-line bg-surface p-4">
+        <span className="mr-4 text-lg font-semibold text-brand">Mindful Focus</span>
         {user ? (
           <>
             {links.map((link) => (
@@ -28,10 +27,10 @@ export default function Layout() {
                 {link.label}
               </NavLink>
             ))}
-            <span className="ml-auto self-center text-sm text-gray-500">{user.email}</span>
+            <span className="ml-auto text-sm text-muted">{user.email}</span>
             <button
               type="button"
-              className="rounded px-3 py-1 text-gray-700 hover:bg-gray-100"
+              className="nav-link"
               onClick={() => auth && signOut(auth)}
             >
               Log out
