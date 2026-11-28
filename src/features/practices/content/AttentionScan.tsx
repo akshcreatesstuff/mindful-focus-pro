@@ -17,6 +17,7 @@ export function AttentionBody() {
       <div className="cards-grid">
         <Card label="Daily Attention Checklist" full>
           <Checklist
+            id="attention"
             items={[
               <><strong>Body:</strong> Notice any physical tension holding attention hostage (jaw, shoulders, gut)</>,
               <><strong>Open loops:</strong> Are there 1–3 nagging tasks you haven't decided on? Write them down: do, defer, or drop.</>,

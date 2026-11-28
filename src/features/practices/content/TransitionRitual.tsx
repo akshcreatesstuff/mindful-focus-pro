@@ -17,6 +17,7 @@ export function TransitionBody() {
       <div className="cards-grid">
         <Card label="The 3-Minute Reset" full>
           <Checklist
+            id="transition"
             items={[
               <><strong>Close (30s):</strong> Write one sentence completing the prior task: "I finished ___ and the next step is ___."</>,
               <><strong>Clear (60s):</strong> Stand up, walk to another room or look outside. Let your mind go blank.</>,

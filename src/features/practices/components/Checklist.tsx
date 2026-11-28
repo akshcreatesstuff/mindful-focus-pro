@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useProgress } from "../../progress/useProgress";
 
-export default function Checklist({ items }: { items: ReactNode[] }) {
-  const [checked, setChecked] = useState<boolean[]>(() => items.map(() => false));
+export default function Checklist({ id, items }: { id: string; items: ReactNode[] }) {
+  const { progress, saveChecklist } = useProgress();
+  const checked = items.map((_, index) => progress?.checklists[id]?.[index] ?? false);
 
   function toggle(index: number) {
-    setChecked((current) => current.map((value, i) => (i === index ? !value : value)));
+    saveChecklist(id, checked.map((value, i) => (i === index ? !value : value)));
   }
 
   return (

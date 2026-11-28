@@ -1,7 +1,8 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { protectedPages } from "../app/pages";
 import { practices } from "../features/practices/practices";
-import { useStreak } from "../features/streak/useStreak";
+import { streakOf } from "../features/progress/progressModel";
+import { useProgress } from "../features/progress/useProgress";
 
 type Props = {
   open: boolean;
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export default function Sidebar({ open, email, onNavigate, onLogout }: Props) {
-  const { streak } = useStreak();
+  const { progress } = useProgress();
   const { pathname, hash } = useLocation();
   const activeHash = hash || `#${practices[0].id}`;
 
@@ -28,8 +29,8 @@ export default function Sidebar({ open, email, onNavigate, onLogout }: Props) {
 
       <div className="streak-badge">
         <div>
-          <div className="streak-num">{streak}</div>
-          <div className="streak-label">day streak 🔥</div>
+          <div className="streak-num">{progress ? streakOf(progress) : "–"}</div>
+          <div className="streak-label">sessions completed 🔥</div>
         </div>
       </div>
 

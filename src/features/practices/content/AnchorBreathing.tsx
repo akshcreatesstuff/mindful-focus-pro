@@ -1,4 +1,4 @@
-import { useStreak } from "../../streak/useStreak";
+import { useProgress } from "../../progress/useProgress";
 import { Card, Steps } from "../components/Blocks";
 import BreathTimer from "../components/BreathTimer";
 
@@ -13,12 +13,12 @@ export function AnchorAbout() {
 }
 
 export function AnchorBody() {
-  const { completeSession } = useStreak();
+  const { progress } = useProgress();
 
   return (
     <div className="cards-grid">
       <Card label="Guided Breath Timer">
-        <BreathTimer onComplete={completeSession} />
+        {progress && <BreathTimer timer={progress.timers.breath} />}
       </Card>
       <Card label="The Technique">
         <Steps
